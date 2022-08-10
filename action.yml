@@ -1,13 +1,25 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  bucket-name: # id of input
+    description: 'Name of the bucket to use'
     required: true
-    default: 'World'
+    default: 'www-test'
+  dist-folder:
+    description: 'Name of the folder to use'
+    required: true
+    default: 'dist'
+  SUPABASE_URL:
+    description: 'Base URL of the application'
+    required: true
+    default: 'http://localhost:8080'
+  SUPABASE_ANON_KEY:
+    description: 'Anonymous key of the application'
+    required: true
+    default: 'anonymous'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  result:
+    description: 'Media Key for the image'
 runs:
   using: 'node16'
   main: 'index.js'
