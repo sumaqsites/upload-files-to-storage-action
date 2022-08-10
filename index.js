@@ -11,7 +11,7 @@ async function run() {
     const supabaseUrl = core.getInput('SUPABASE_URL') || process.env.SUPABASE_URL
     const supabaseAnonKey = core.getInput('SUPABASE_ANON_KEY') || process.env.SUPABASE_ANON_KEY
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
-    // const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
+    const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
     // if (errGetBucket && !errGetBucket.message.includes('not found')) {
     //   core.setFailed(errGetBucket.message)
     //   return
