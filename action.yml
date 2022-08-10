@@ -4,19 +4,15 @@ inputs:
   bucket-name: 
     description: 'Name of the bucket to use'
     required: true
-    default: 'www-test'
   dist-folder:
     description: 'Name of the folder to use'
     required: false
-    default: 'dist'
   SUPABASE_URL:
     description: 'Base URL of the application'
     required: true
-    default: 'http://localhost:8080'
   SUPABASE_ANON_KEY:
     description: 'Anonymous key of the application'
     required: true
-    default: 'anonymous'
 outputs:
   result:
     description: 'Media Key for the image'
