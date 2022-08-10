@@ -10,34 +10,34 @@ async function run() {
     const distFolder = core.getInput('dist-folder') || 'dist'
     const supabaseUrl = core.getInput('SUPABASE_URL') || process.env.SUPABASE_URL
     const supabaseAnonKey = core.getInput('SUPABASE_ANON_KEY') || process.env.SUPABASE_ANON_KEY
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey)
-    const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
-    if (errGetBucket && !errGetBucket.message.includes('not found')) {
-      core.setFailed(errGetBucket.message)
-      return
+    core.debug(`bucketName: ${bucketName}`)
+    // const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    // const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
+    // if (errGetBucket && !errGetBucket.message.includes('not found')) {
+    //   core.setFailed(errGetBucket.message)
+    //   return
     }
-    if (!bucket) {
-      const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
-        public: false
-      })
-      if (errCreateBucket) {
-        core.setFailed(errCreateBucket.message)
-        return
-      }
-    }
+    // if (!bucket) {
+    //   const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
+    //     public: false
+    //   })
+    //   if (errCreateBucket) {
+    //     core.setFailed(errCreateBucket.message)
+    //     return
+    //   }
+    // }
 
     // read files from dist folder
-    const { error: errEmptyBucket } = await supabase.storage.emptyBucket(bucketName)
-    if (errEmptyBucket) {
-      core.setFailed(errEmptyBucket.message)
-      return
-    }
+    // const { error: errEmptyBucket } = await supabase.storage.emptyBucket(bucketName)
+    // if (errEmptyBucket) {
+    //   core.setFailed(errEmptyBucket.message)
+    //   return
+    // }
 
     // const filePathDir = isAbsolute(distFolder) ? distFolder : `${process.env.GITHUB_WORKSPACE}/${distFolder}`
-    filePathDir = '/dist'
-    core.debug(`Reading file: ${distFolder}`)
-    core.debug(`Reading file dir: ${filePathDir}`)
+    // filePathDir = '/dist'
+    // core.debug(`Reading file: ${distFolder}`)
+    // core.debug(`Reading file dir: ${filePathDir}`)
 
     // const files = fs.readdirSync(filePathDir)
     // for (const file of files) {
