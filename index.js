@@ -13,7 +13,7 @@ async function run() {
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
     if (errGetBucket && !errGetBucket.message.includes('not found')) {
-      core.setFailed(errGetBucket.message)
+      core.setFailed(errGetBucket.message + '-' + supabaseUrl)
       // return
     }
     if (!bucket) {
