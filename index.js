@@ -16,7 +16,7 @@ async function run() {
     // if (errGetBucket && !errGetBucket.message.includes('not found')) {
     //   core.setFailed(errGetBucket.message)
     //   return
-    }
+    // }
     // if (!bucket) {
     //   const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
     //     public: false
