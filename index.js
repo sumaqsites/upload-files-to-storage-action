@@ -39,17 +39,16 @@ async function run() {
     core.debug(`Reading file: ${distFolder}`)
     core.debug(`Reading file dir: ${filePathDir}`)
 
-    const files = fs.readdirSync(filePathDir)
-    for (const file of files) {
-      core.debug(`Uploading ${join(filePathDir, file)} to ${bucketName}`)
-      const buffer = fs.readFileSync(join(filePathDir, file))
-      const { data, error } = await supabase.storage.from(bucketName).upload(file, buffer)
-      if (error) throw new Error(error.message)
-      core.debug(`Media Key: ${data?.Key}`)
-      core.setOutput('result', data?.Key)
-    }
+    // const files = fs.readdirSync(filePathDir)
+    // for (const file of files) {
+    //   core.debug(`Uploading ${join(filePathDir, file)} to ${bucketName}`)
+    //   const buffer = fs.readFileSync(join(filePathDir, file))
+    //   const { data, error } = await supabase.storage.from(bucketName).upload(file, buffer)
+    //   if (error) throw new Error(error.message)
+    //   core.debug(`Media Key: ${data?.Key}`)
+    //   core.setOutput('result', data?.Key)
+    // }
   } catch (error) {
-    console.error(error.message)
     core.setFailed(error.message + ' - ' + filePathDir)
   }
 }
