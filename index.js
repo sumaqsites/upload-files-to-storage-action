@@ -1,36 +1,57 @@
+const fs = require('fs')
+const path = require('path')
 const core = require('@actions/core')
 const github = require('@actions/github')
 const { createClient } = require('@supabase/supabase-js')
 
-try {
-  const backetName = core.getInput('bucket-name')
-  const distFolder = core.getInput('dist-folder')
+async function run() {
+  try {
+    const bucketName = core.getInput('bucket-name') || 'www-test'
+    const distFolder = core.getInput('dist-folder') || 'dist'
+    const supabaseUrl = core.getInput('SUPABASE_URL') || process.env.SUPABASE_URL
+    const supabaseAnonKey = core.getInput('SUPABASE_ANON_KEY') || process.env.SUPABASE_ANON_KEY
 
-  const supabaseUrl = core.getInput('SUPABASE_URL')
-  const supabaseAnonKey = core.getInput('SUPABASE_ANON_KEY')
+    // core.log(`Bucket name: ${backetName}`)
+    // core.log(`Dist folder: ${distFolder}`)
+    // core.log(`Supabase URL: ${supabaseUrl}`)
+    // core.log(`Supabase Anon Key: ${supabaseAnonKey}`)
 
-  console.log(`Bucket name: ${backetName}`)
-  console.log(`Dist folder: ${distFolder}`)
-  console.log(`Supabase URL: ${supabaseUrl}`)
-  console.log(`Supabase Anon Key: ${supabaseAnonKey}`)
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
+    if (errGetBucket && !errGetBucket.message.includes('not found')) {
+      core.setFailed(errGetBucket.message)
+      return
+    }
+    if (!bucket) {
+      const { data: newBucket, error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
+        public: false
+      })
+      if (errCreateBucket) {
+        core.setFailed(errCreateBucket.message)
+        return
+      }
+    }
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-  const { data, error } = await supabase.storage.getBucket(backetName)
-  if (error) {
+    // read files from dist folder
+    const { error: errEmptyBucket } = await supabase.storage.emptyBucket(bucketName)
+    if (errEmptyBucket) {
+      core.setFailed(errEmptyBucket.message)
+      return
+    }
+    const filesPath = path.join(__dirname, distFolder)
+    const files = fs.readdirSync(filesPath)
+    for (const file of files) {
+      const buffer = fs.readFileSync(path.join(filesPath, file))
+      const { data, error } = await supabase.storage.from(bucketName).upload(file, buffer)
+      // const filePath = path.join(__dirname, distFolder, file)
+      if (error) throw new Error(error.message)
+      core.debug(`Media Key: ${data?.Key}`)
+      core.setOutput('result', data?.Key)
+    }
+  } catch (error) {
+    console.error(error.message)
     core.setFailed(error.message)
-    return
   }
-  console.log(`Bucket: ${JSON.stringify(data)}`)
-
-  // // `who-to-greet` input defined in action metadata file
-  // const nameToGreet = core.getInput('who-to-greet')
-  // console.log(`Hello ${nameToGreet}!`)
-  // const time = new Date().toTimeString()
-  // core.setOutput('time', time)
-  // // Get the JSON webhook payload for the event that triggered the workflow
-  // const payload = JSON.stringify(github.context.payload, undefined, 2)
-  // console.log(`The event payload: ${payload}`)
-} catch (error) {
-  core.setFailed(error.message)
 }
+
+run()
