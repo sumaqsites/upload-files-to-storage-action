@@ -1,5 +1,5 @@
 const fs = require('fs')
-const path = require('path')
+const { isAbsolute, join } = require('path')
 const core = require('@actions/core')
 const github = require('@actions/github')
 const { createClient } = require('@supabase/supabase-js')
@@ -18,7 +18,7 @@ async function run() {
       return
     }
     if (!bucket) {
-      const { data: newBucket, error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
+      const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
         public: false
       })
       if (errCreateBucket) {
@@ -33,13 +33,16 @@ async function run() {
       core.setFailed(errEmptyBucket.message)
       return
     }
-    const filesPath = path.join(__dirname, distFolder)
-    const files = fs.readdirSync(filesPath)
+
+    const filePathDir = isAbsolute(distFolder) ? distFolder : `${process.env.GITHUB_WORKSPACE}/${distFolder}`
+    core.debug(`Reading file: ${distFolder}`)
+    core.debug(`Reading file dir: ${filePathDir}`)
+
+    const files = fs.readdirSync(filePathDir)
     for (const file of files) {
-      core.log(`Uploading ${path.join(filesPath, file)} to ${bucketName}`)
-      const buffer = fs.readFileSync(path.join(filesPath, file))
+      core.debug(`Uploading ${join(filePathDir, file)} to ${bucketName}`)
+      const buffer = fs.readFileSync(join(filePathDir, file))
       const { data, error } = await supabase.storage.from(bucketName).upload(file, buffer)
-      // const filePath = path.join(__dirname, distFolder, file)
       if (error) throw new Error(error.message)
       core.debug(`Media Key: ${data?.Key}`)
       core.setOutput('result', data?.Key)
