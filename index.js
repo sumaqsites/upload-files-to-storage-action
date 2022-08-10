@@ -11,11 +11,6 @@ async function run() {
     const supabaseUrl = core.getInput('SUPABASE_URL') || process.env.SUPABASE_URL
     const supabaseAnonKey = core.getInput('SUPABASE_ANON_KEY') || process.env.SUPABASE_ANON_KEY
 
-    // core.log(`Bucket name: ${backetName}`)
-    // core.log(`Dist folder: ${distFolder}`)
-    // core.log(`Supabase URL: ${supabaseUrl}`)
-    // core.log(`Supabase Anon Key: ${supabaseAnonKey}`)
-
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
     if (errGetBucket && !errGetBucket.message.includes('not found')) {
@@ -41,6 +36,7 @@ async function run() {
     const filesPath = path.join(__dirname, distFolder)
     const files = fs.readdirSync(filesPath)
     for (const file of files) {
+      core.log(`Uploading ${path.join(filesPath, file)} to ${bucketName}`)
       const buffer = fs.readFileSync(path.join(filesPath, file))
       const { data, error } = await supabase.storage.from(bucketName).upload(file, buffer)
       // const filePath = path.join(__dirname, distFolder, file)
