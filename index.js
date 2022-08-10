@@ -50,7 +50,7 @@ async function run() {
     }
   } catch (error) {
     console.error(error.message)
-    core.setFailed(error.message)
+    core.setFailed(error.message + ' - ' + filePathDir)
   }
 }
 
