@@ -16,15 +16,15 @@ async function run() {
     //   core.setFailed(errGetBucket.message)
     //   return
     // }
-    // if (!bucket) {
-    //   const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
-    //     public: false
-    //   })
-    //   if (errCreateBucket) {
-    //     core.setFailed(errCreateBucket.message)
-    //     return
-    //   }
-    // }
+    if (!bucket) {
+      const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
+        public: false
+      })
+      if (errCreateBucket) {
+        core.setFailed(errCreateBucket.message)
+        return
+      }
+    }
 
     // read files from dist folder
     // const { error: errEmptyBucket } = await supabase.storage.emptyBucket(bucketName)
