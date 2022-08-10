@@ -34,7 +34,8 @@ async function run() {
       return
     }
 
-    const filePathDir = isAbsolute(distFolder) ? distFolder : `${process.env.GITHUB_WORKSPACE}/${distFolder}`
+    // const filePathDir = isAbsolute(distFolder) ? distFolder : `${process.env.GITHUB_WORKSPACE}/${distFolder}`
+    filePathDir = './dist'
     core.debug(`Reading file: ${distFolder}`)
     core.debug(`Reading file dir: ${filePathDir}`)
 

@@ -1,13 +1,13 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  bucket-name: # id of input
+  bucket-name: 
     description: 'Name of the bucket to use'
     required: true
     default: 'www-test'
   dist-folder:
     description: 'Name of the folder to use'
-    required: true
+    required: false
     default: 'dist'
   SUPABASE_URL:
     description: 'Base URL of the application'
