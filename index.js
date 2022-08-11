@@ -8,8 +8,8 @@ async function run() {
   try {
     const bucketName = core.getInput('bucket-name') || 'www-test'
     const distFolder = core.getInput('dist-folder') || 'dist'
-    const supabaseUrl = core.getInput('SUPABASE_URL') || process.env.SUPABASE_URL
-    const supabaseAnonKey = core.getInput('SUPABASE_ANON_KEY') || process.env.SUPABASE_ANON_KEY
+    const supabaseUrl = process.env.SUPABASE_URL
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
     if (errGetBucket && !errGetBucket.message.includes('not found')) {
