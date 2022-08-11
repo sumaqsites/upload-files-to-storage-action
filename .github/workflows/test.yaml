@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  SUPABASE_URL: '{{ secrets.SUPABASE_URL }}'
-  SUPABASE_ANON_KEY: '{{ secrets.SUPABASE_ANON_KEY }}'
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
 
 jobs:
@@ -23,5 +23,5 @@ jobs:
         run: npm install --only="dev"
       - uses: ./
         with:
-          bucket-name: 'www-sumaq-sites'
+          bucket-name: 'test-bucket'
           dist-folder: 'dist'
