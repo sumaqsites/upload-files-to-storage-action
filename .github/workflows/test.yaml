@@ -21,10 +21,6 @@ jobs:
           node-version: 16
       - name: Install site dependencies
         run: npm install --only="dev"
-      - name: Build the site to stogare in /dist
-        run: npm run build:storage
-      - name: Upload files from repository ${{ github.repository }}
-        run: ls -la ./dist
       - uses: ./
         with:
           bucket-name: 'www-sumaq-sites'
