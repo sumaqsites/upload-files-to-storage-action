@@ -4,15 +4,11 @@ inputs:
   bucket-name: 
     description: 'Name of the bucket to use'
     required: true
+    default: 'test-bucket'
   dist-folder:
     description: 'Name of the folder to use'
     required: false
-  SUPABASE_URL:
-    description: 'Base URL of the application'
-    required: true
-  SUPABASE_ANON_KEY:
-    description: 'Anonymous key of the application'
-    required: true
+    default: 'dist'
 outputs:
   result:
     description: 'Media Key for the image'

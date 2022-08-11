@@ -1,0 +1,31 @@
+name: Test Action
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SUPABASE_URL: '{{ secrets.SUPABASE_URL }}'
+  SUPABASE_ANON_KEY: '{{ secrets.SUPABASE_ANON_KEY }}'
+
+
+jobs:
+  upload_files:
+    name: Upload files to Sumaq Sites
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install site dependencies
+        run: npm install --only="dev"
+      - name: Build the site to stogare in /dist
+        run: npm run build:storage
+      - name: Upload files from repository ${{ github.repository }}
+        run: ls -la ./dist
+      - uses: ./
+        with:
+          bucket-name: 'www-sumaq-sites'
+          dist-folder: 'dist'

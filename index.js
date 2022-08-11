@@ -10,12 +10,20 @@ async function run() {
     const distFolder = core.getInput('dist-folder') || 'dist'
     const supabaseUrl = process.env.SUPABASE_URL
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
+    
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('No supabase url or anon key is found!')
+    }
+    
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    
     const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
     if (errGetBucket && !errGetBucket.message.includes('not found')) {
       core.setFailed(errGetBucket.message + '-' + supabaseUrl)
       // return
     }
+
     if (!bucket) {
       const { error: errCreateBucket } = await supabase.storage.createBucket(bucketName, {
         public: false
