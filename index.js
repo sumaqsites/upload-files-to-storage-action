@@ -1,7 +1,7 @@
 const fs = require('fs')
 const { isAbsolute, join } = require('path')
 const core = require('@actions/core')
-const github = require('@actions/github')
+// const github = require('@actions/github')
 const { createClient } = require('@supabase/supabase-js')
 
 async function run() {
@@ -10,14 +10,13 @@ async function run() {
     const distFolder = core.getInput('dist-folder')
     const supabaseUrl = process.env.SUPABASE_URL
     const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
-    
-    
+
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error('No supabase url or anon key is found!')
     }
-    
+
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
-    
+
     const { data: bucket, error: errGetBucket } = await supabase.storage.getBucket(bucketName)
     if (errGetBucket && !errGetBucket.message.includes('not found')) {
       core.setFailed(errGetBucket.message + '-' + supabaseUrl)
@@ -42,9 +41,6 @@ async function run() {
     }
 
     const filePathDir = isAbsolute(distFolder) ? distFolder : `${process.env.GITHUB_WORKSPACE}/${distFolder}`
-    filePathDir = '/dist'
-    core.debug(`Reading file: ${distFolder}`)
-    core.debug(`Reading file dir: ${filePathDir}`)
 
     const files = fs.readdirSync(filePathDir)
     for (const file of files) {
@@ -56,7 +52,7 @@ async function run() {
       core.setOutput('result', data?.Key)
     }
   } catch (error) {
-    core.setFailed(error.message + ' - ' + filePathDir)
+    core.setFailed(error.message)
   }
 }
 
